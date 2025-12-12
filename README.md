@@ -1,0 +1,1 @@
+echo "# next-math-teacher"
