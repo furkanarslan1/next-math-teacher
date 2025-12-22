@@ -20,16 +20,16 @@ const navLinks = [
 export default function Header() {
   const pathname = usePathname();
   return (
-    <div className="flex justify-around items-center gap-4 h-16 w-full  bg-black">
+    <div className="flex justify-around items-center gap-4 h-16 w-full  bg-transparent text-white font-bold">
       <section>
-        <h1>John Doe</h1>
+        <h1>Jane Doe</h1>
       </section>
       <section className="flex items-center gap-4">
         {navLinks.map((nav) => (
           <Link
             key={nav.href}
             href={nav.href}
-            className={`hover:border-b-2 hover:border-white transition-all duration-300 ${
+            className={`border-b-2 border-transparent hover:border-white transition-all duration-300 ${
               pathname === nav.href ? "border-b-2 border-white" : ""
             }`}
           >
