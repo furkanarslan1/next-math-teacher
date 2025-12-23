@@ -4,6 +4,7 @@ import { CategoryType } from "@/types/CategoryType";
 import Link from "next/link";
 import Course_card from "./Course_card";
 import { CourseType } from "@/types/CourseType";
+import Filter from "./Filter";
 
 const categories: CategoryType[] = [
   { id: 1, name: "math elementary", slug: "math-elementary" },
@@ -60,7 +61,7 @@ export default function Courses_list({
   return (
     <div className="max-w-6xl mx-auto ">
       <Course_categories categories={categories} />
-      {/* {params === "courses" && <Filter />} */}
+      {params === "courses" && <Filter />}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-12 ">
         {courses.map((course) => (
           <Course_card key={course.id} course={course} />

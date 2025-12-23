@@ -20,7 +20,7 @@ export default async function CoursesPage({
         />
         <div className="absolute inset-0 bg-black/40 "></div>
       </div>
-      <section className="max-w-6xl mx-auto space-y-6">
+      <section className="max-w-6xl mx-auto space-y-6 p-4">
         <h1 className="text-2xl font-bold">Courses</h1>
         <Courses_list category={category} params="courses" />
       </section>
