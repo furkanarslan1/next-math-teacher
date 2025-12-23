@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Discount_banner() {
   return (
-    <div className="relative h-120 lg:h-80">
+    <div className="relative h-120 lg:h-120">
       <Image
         src="/math-hero-2.jpg"
         alt="math-hero"
