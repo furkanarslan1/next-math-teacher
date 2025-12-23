@@ -27,7 +27,7 @@ export default function Course_categories({
 
     //URL i güncelleme
     //Update the URL
-    router.push(`${pathname} ?${params.toString()}`, { scroll: false });
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
