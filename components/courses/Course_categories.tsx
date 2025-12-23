@@ -4,18 +4,7 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
-interface CategoryType {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-const categories = [
-  { id: "1", name: "math elementary", slug: "math-elementary" },
-  { id: "2", name: "math middle", slug: "math-middle" },
-  { id: "3", name: "math high", slug: "math-high" },
-];
+import { CategoryType } from "@/types/CategoryType";
 
 export default function Course_categories({
   categories,
