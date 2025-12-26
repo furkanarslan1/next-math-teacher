@@ -12,6 +12,19 @@ const course = {
   slug: "lorem1",
   description:
     " Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde atque placeat sed perspiciatis et praesentium facilis sequi nulla facere explicabo id, sapiente nobis minus minima rerum ipsam vel nesciunt. Neque voluptate harum quam voluptatum beatae, voluptatibus assumenda repellat, magnam mollitia reprehenderit odio pariatur odit asperiores est qui placeat ut temporibus dolorem laudantium iure explicabo. Reprehenderit eius facilis impedit possimus. Repellat possimus quaerat quisquam placeat nobis libero nesciunt vel sint recusandae. Repudiandae, necessitatibus quod sint minus ex velit deleniti quos cumque ipsum pariatur voluptates commodi, accusantium corrupti odio repellat asperiores libero itaque sed alias animi autem. Vero harum qui, nostrum, ea quos vitae totam fuga repellat rem exercitationem iure blanditiis similique. Optio soluta a delectus nulla cum quod pariatur voluptate temporibus, commodi maiores natus, beatae porro cumque sequi molestiae dignissimos consectetur adipisci? Esse mollitia nisi at tempora. Natus, quae. Nobis, beatae. Iusto aliquid odio corporis reiciendis reprehenderit aperiam nulla ut debitis dignissimos facilis! Nihil aut consectetur, adipisci fuga hic accusantium vero porro laborum quia doloribus placeat. Exercitationem debitis aut pariatur reprehenderit molestiae at amet adipisci, itaque alias. Expedita sapiente fugiat est suscipit quaerat accusamus dicta nisi, fuga saepe aperiam labore a ut amet. Tempore officia eligendi magnam ipsum repudiandae. Distinctio, dicta.",
+  features: [
+    "Personalized Curriculum",
+    "Practical Problem-Solving Techniques",
+    "Weekly Homework Tracking",
+    "Regular Progress Reporting",
+    " On-demand Q&A Support via WhatsApp / 24/7 Question Support Line",
+    "Exam Anxiety Management",
+    "Extensive Resource Library",
+    "Practice Exams",
+    "Flexible Scheduling",
+    "In-person or Online Lesson Options",
+    "One-on-One Tutoring or Small Boutique Groups",
+  ],
 };
 
 const comments = [
@@ -69,11 +82,20 @@ export default function CourseDetailPage({
 
           <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-bold text-gray-800">{course.title}</h1>
-            <p className="text-md">{course.description}</p>ü
-            <div className="flex items-center justify-around">
+            <ul
+              style={{}}
+              className="text-md flex flex-col items-start ps-6 gap-4  bg-gray-200 p-4 rounded-lg shadow-md"
+            >
+              {course.features.map((feature, index) => (
+                <li key={index} className="list-disc font-bold">
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-center justify-between px-2">
               <p>
                 Price:{" "}
-                <span className="bg-green-500 rounded-md p-1 font-bold">
+                <span className="bg-green-400 rounded-md p-1 font-bold">
                   ${course.price}
                 </span>
               </p>
@@ -84,9 +106,14 @@ export default function CourseDetailPage({
             </div>
           </div>
         </div>
+        {/* DESCRİPTION */}
+        <div className="flex flex-col gap-2">
+          <h4 className="font-bold">Descripton:</h4>
+          <p className="text-sm">{course.description}</p>
+        </div>
         {/* COMMENTS */}
-        <div>
-          <h4>Comments</h4>
+        <div className="space-y-4">
+          <h4 className="font-bold">Comments</h4>
           <div className="flex flex-col gap-4">
             {comments.map((comment) => (
               <div

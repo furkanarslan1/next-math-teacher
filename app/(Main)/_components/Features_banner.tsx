@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Features_banner() {
   return (
-    <div className="grid gird-cols-1 md:grid-cols-3 gap-4 px-16 ">
+    <div className="grid gird-cols-1 md:grid-cols-3 gap-4 px-16 max-w-6xl mx-auto">
       <div className="border border-slate-300 rounded-md p-4 bg-orange-500  text-white flex flex-col items-center gap-2">
         <h5 className="font-bold">Personalized Study Plans</h5>
         <UserCheck size={32} strokeWidth={2.5} />
