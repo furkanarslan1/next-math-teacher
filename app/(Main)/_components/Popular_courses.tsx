@@ -107,8 +107,8 @@ export default function Popular_courses() {
     <section className="max-w-6xl mx-auto bg-black p-4 lg:rounded-lg space-y-4">
       <h1 className="text-white font-bold text-2xl">Popular Courses </h1>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 ">
-        {popularCourse.map((course) => (
-          <div className="space-y-2">
+        {popularCourse.map((course, i) => (
+          <div key={i} className="space-y-2">
             <div className="bg-gray-700 text-slate-300 p-4 rounded-lg px-6 text-sm space-y-4">
               <h3 className="text-center font-bold text-white border-b-2 border-white pb-1">
                 {course.title}

@@ -55,6 +55,7 @@ export function LoginForm({
     toast.success("Login successful!");
 
     setLoading(false);
+    router.refresh();
     router.replace("/");
   };
 
