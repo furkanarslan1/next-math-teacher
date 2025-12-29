@@ -1,4 +1,5 @@
 "use client";
+import { signOutAction } from "@/app/(Actions)/auth/signOutAction";
 import {
   Facebook,
   Instagram,
@@ -11,6 +12,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { toast } from "sonner";
 
 const navLinks = [
   { name: "About", href: "/about" },
@@ -64,9 +66,22 @@ export default function Header({ user }: { user: any }) {
       {/* SIGN IN AND USER INFO */}
       <section>
         {user ? (
-          <div className="flex items-center gap-2 bg-white/60 px-4 py-2 rounded-md">
-            <User2 />
-            <p>{user.user_metadata?.full_name || user.email}</p>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm bg-white/60 px-4 py-2 rounded-md">
+              <User2 size={20} />
+              <p>{user.user_metadata?.full_name || user.email}</p>
+            </div>
+            <button
+              className="px-4 py-2 rounded-md bg-red-600 cursor-pointer text-sm"
+              onClick={async () => {
+                const result = await signOutAction();
+                if (result?.error) {
+                  toast.error("Logout failed");
+                }
+              }}
+            >
+              Logout
+            </button>
           </div>
         ) : (
           <Link href="/login" className="bg-white/60 px-4 py-2 rounded-md">
