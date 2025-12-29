@@ -5,6 +5,7 @@ import {
   LucideTwitter,
   Twitter,
   TwitterIcon,
+  User2,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -17,7 +18,7 @@ const navLinks = [
   { name: "Courses", href: "/courses" },
 ];
 
-export default function Header() {
+export default function Header({ user }: { user: any }) {
   const pathname = usePathname();
   return (
     <div className="flex justify-around items-center gap-4 h-16 w-full  bg-transparent text-white font-bold">
@@ -58,6 +59,20 @@ export default function Header() {
             <Twitter size={24} color="#000000" />{" "}
           </Link>
         </div>
+      </section>
+
+      {/* SIGN IN AND USER INFO */}
+      <section>
+        {user ? (
+          <div className="flex items-center gap-2 bg-white/60 px-4 py-2 rounded-md">
+            <User2 />
+            <p>{user.user_metadata?.full_name || user.email}</p>
+          </div>
+        ) : (
+          <Link href="/login" className="bg-white/60 px-4 py-2 rounded-md">
+            Sign in
+          </Link>
+        )}
       </section>
     </div>
   );
