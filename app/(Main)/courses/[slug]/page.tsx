@@ -1,6 +1,8 @@
+import CommentForm from "@/components/courses/CommentForm";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { ShoppingBasketIcon, Star, User } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -70,13 +72,40 @@ export default async function CourseDetailPage({
 
   const { data: course, error } = await supabase
     .from("courses")
-    .select("*")
+    .select(
+      `
+      *,
+      comments (
+        id,
+        content,
+        rating,
+        created_at,
+        profiles (
+          full_name,
+          avatar_url
+        )
+      )
+    `
+    )
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (error || !course) {
-    notFound();
+  if (error) {
+    console.error("Sorgu hatası:", error);
+    return <div>Hata oluştu.</div>;
   }
+
+  if (!course) {
+    return notFound();
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const allComments = course.comments || [];
+  console.log("Gelen yorum datası:", JSON.stringify(allComments, null, 2));
+
   return (
     <div>
       <div className="h-16 bg-black w-full"></div>
@@ -143,7 +172,18 @@ export default async function CourseDetailPage({
         {/* COMMENTS */}
         <div className="space-y-4">
           <h4 className="font-bold">Comments</h4>
-          <div className="flex flex-col gap-4">
+          {user ? (
+            <CommentForm courseId={course.id} />
+          ) : (
+            <div className="bg-blue-50 p-4 rounded-lg text-gray-800 text-sm">
+              Please{" "}
+              <Link href="/login" className="underline font-bold">
+                login
+              </Link>{" "}
+              to leave a review.
+            </div>
+          )}
+          {/* <div className="flex flex-col gap-4">
             {comments.map((comment) => (
               <div
                 key={comment.id}
@@ -179,6 +219,50 @@ export default async function CourseDetailPage({
                 </p>
               </div>
             ))}
+          </div> */}
+
+          <div className="grid gap-6">
+            {allComments.length > 0 ? (
+              allComments.map((comment: any) => (
+                <div
+                  key={comment.id}
+                  className="bg-gray-50 p-6 rounded-xl space-y-3"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden">
+                        {comment.profiles?.avatar_url ? (
+                          <img src={comment.profiles.avatar_url} alt="avatar" />
+                        ) : (
+                          <User className="p-2 w-full h-full text-gray-500" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm">
+                          {comment.profiles?.full_name || "Anonymous Student"}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {new Date(comment.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Stars*/}
+                    <div className="flex text-yellow-400">
+                      {[...Array(comment.rating)].map((_, i) => (
+                        <Star key={i} size={14} fill="currentColor" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {comment.content}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 italic">
+                No reviews yet. Be the first!
+              </p>
+            )}
           </div>
         </div>
       </div>
