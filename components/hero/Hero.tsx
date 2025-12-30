@@ -6,12 +6,12 @@ export default function Hero() {
   return (
     <div className="relative h-150 lg:h-200">
       <Image
-        src="/hero-image.jpg"
+        src="/deneme.jpg"
         alt="math-hero"
         className="object-cover object-left "
         fill
       />
-      <div className="absolute inset-0 bg-black/10 "></div>
+      <div className="absolute inset-0 bg-black/30 "></div>
     </div>
   );
 }

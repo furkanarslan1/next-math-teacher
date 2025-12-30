@@ -5,10 +5,11 @@ import React from "react";
 export default async function CoursesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category: string }>;
+  searchParams: Promise<{ category: string; sort?: string }>;
 }) {
   const params = await searchParams;
   const category = params.category;
+  const sort = params.sort || "newest";
   return (
     <div>
       <div className=" relative h-26 w-ful mb-8 ">
@@ -22,7 +23,12 @@ export default async function CoursesPage({
       </div>
       <section className="max-w-6xl mx-auto space-y-6 p-4">
         <h1 className="text-2xl font-bold">Courses</h1>
-        <Courses_list category={category} params="courses" />
+        <Courses_list
+          key={`${category}-${sort}`} // Key değişince bileşen sıfırlanır ve taze veri çeker
+          category={category}
+          params="courses"
+          sort={sort}
+        />
       </section>
     </div>
   );

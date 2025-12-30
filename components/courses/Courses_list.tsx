@@ -10,9 +10,11 @@ import { createServerSupabase } from "@/lib/supabase/server";
 export default async function Courses_list({
   category,
   params,
+  sort,
 }: {
   category: string;
   params: "home" | "courses";
+  sort?: string;
 }) {
   const supabase = await createServerSupabase();
 
@@ -30,6 +32,19 @@ export default async function Courses_list({
   // If there is a category filter, add it to the query.
   if (category && category !== "all") {
     query = query.eq("course_categories.categories.slug", category);
+  }
+
+  //sıralama mantığı
+  //sorting logic
+  if (sort === "asc") {
+    query = query.order("price", { ascending: true });
+  } else if (sort === "desc") {
+    query = query.order("price", { ascending: false });
+  } else if (sort === "oldest") {
+    query = query.order("created_at", { ascending: true });
+  } else {
+    // default: newest
+    query = query.order("created_at", { ascending: false });
   }
 
   // Ana sayfadaysak sadece 4-6 tane göster, kurslar sayfasındaysak hepsini
