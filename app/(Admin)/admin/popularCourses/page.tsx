@@ -22,13 +22,13 @@ export default async function PopularCoursesPage() {
     <div className="p-8 max-w-4xl mx-auto">
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Popüler Kurslar</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Popular Courses</h1>
           <p className="text-muted-foreground">
-            Ana sayfada görünecek 4 kursu yönetin.
+            Manage the 4 courses that will appear on the homepage.
           </p>
         </div>
         <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-semibold border border-blue-100">
-          Seçili: {popularIds.length} / 4
+          Selected: {popularIds.length} / 4
         </div>
       </div>
 

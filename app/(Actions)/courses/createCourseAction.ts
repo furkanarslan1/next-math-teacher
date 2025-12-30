@@ -70,6 +70,7 @@ export async function createCourseAction(formData: FormData) {
         discount_percentage,
         image_url,
         is_active,
+        features: features,
       },
     ])
     .select()
@@ -84,15 +85,6 @@ export async function createCourseAction(formData: FormData) {
     await supabase
       .from("course_categories")
       .insert([{ course_id: newCourse.id, category_id: category_id }]);
-  }
-
-  if (features.length > 0 && newCourse) {
-    const featureRows = features.map((f) => ({
-      course_id: newCourse.id,
-      feature: f,
-    }));
-
-    await supabase.from("course_features").insert(featureRows);
   }
 
   revalidatePath("/admin/courses");

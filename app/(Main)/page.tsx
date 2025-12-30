@@ -18,7 +18,7 @@ export default async function Home({
       <Features_banner />
       <Popular_courses />
       <Discount_banner />
-      <Courses_list category={category} params="home" />
+      <Courses_list key={category} category={category} params="home" />
     </main>
   );
 }
