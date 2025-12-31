@@ -1,33 +1,69 @@
+"use client";
+import { motion, Variants } from "framer-motion"; // Variants eklendi
 import { Lightbulb, TrendingUp, UserCheck } from "lucide-react";
 import React from "react";
 
+//  Variants(TYPE)
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
 export default function Features_banner() {
   return (
-    <div className="grid gird-cols-1 md:grid-cols-3 gap-4 px-16 max-w-6xl mx-auto">
-      <div className="border border-slate-300 rounded-md p-4 bg-orange-500  text-white flex flex-col items-center gap-2">
-        <h5 className="font-bold">Personalized Study Plans</h5>
+    <motion.div
+      className="grid grid-cols-1 md:grid-cols-3 gap-4 px-16 max-w-6xl mx-auto"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
+      <motion.div
+        variants={itemVariants}
+        className="border border-slate-300 rounded-md p-4 bg-orange-500/80 text-white flex flex-col items-center gap-2"
+      >
+        <h5 className="font-bold text-center">Personalized Study Plans</h5>
         <UserCheck size={32} strokeWidth={2.5} />
-        <p className="text-sm">
-          Every student learns differently. I create a special roadmap based on
-          your goals and level
+        <p className="text-sm text-center">
+          Every student learns differently...
         </p>
-      </div>
-      <div className="border border-slate-300 rounded-md p-4 bg-slate-800  text-white  flex flex-col items-center gap-2">
-        <h5 className="font-bold">Focus on New Generation Questions</h5>
+      </motion.div>
+
+      <motion.div
+        variants={itemVariants}
+        className="border border-slate-300 rounded-md p-4 bg-slate-800/80 text-white flex flex-col items-center gap-2"
+      >
+        <h5 className="font-bold text-center">
+          Focus on New Generation Questions
+        </h5>
         <Lightbulb size={32} strokeWidth={2.5} />
-        <p className="text-sm">
-          Learn how to solve complex logic and reasoning questions for LGS and
-          YKS exams
+        <p className="text-sm text-center">
+          Learn how to solve complex logic...
         </p>
-      </div>
-      <div className="border border-slate-300 rounded-md p-4 bg-green-500  flex flex-col items-center gap-2">
-        <h5 className="font-bold">Progress Tracking</h5>
+      </motion.div>
+
+      <motion.div
+        variants={itemVariants}
+        className="border border-slate-300 rounded-md p-4 bg-green-500/80 flex flex-col items-center gap-2"
+      >
+        <h5 className="font-bold text-center">Progress Tracking</h5>
         <TrendingUp size={32} strokeWidth={2.5} />
-        <p className="text-sm">
-          track the student's progress and share regular reports with parents
-          every month
-        </p>
-      </div>
-    </div>
+        <p className="text-sm text-center">Track the student's progress...</p>
+      </motion.div>
+    </motion.div>
   );
 }

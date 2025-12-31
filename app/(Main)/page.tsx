@@ -15,7 +15,9 @@ export default async function Home({
   return (
     <main className="space-y-6">
       <Hero />
-      <Features_banner />
+      <div className="md:hidden">
+        <Features_banner />
+      </div>
       <Popular_courses />
       <Discount_banner />
       <Courses_list key={category} category={category} params="home" />
