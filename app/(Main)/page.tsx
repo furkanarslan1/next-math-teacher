@@ -4,6 +4,7 @@ import Discount_banner from "./_components/Discount_banner";
 import Features_banner from "./_components/Features_banner";
 import Courses_list from "@/components/courses/Courses_list";
 import Popular_courses from "./_components/Popular_courses";
+import Home_comments from "@/components/comments/Home_comments";
 
 export default async function Home({
   searchParams,
@@ -21,6 +22,7 @@ export default async function Home({
       <Popular_courses />
       <Discount_banner />
       <Courses_list key={category} category={category} params="home" />
+      <Home_comments />
     </main>
   );
 }

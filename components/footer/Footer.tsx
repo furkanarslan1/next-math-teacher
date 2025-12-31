@@ -2,7 +2,7 @@ import React from "react";
 
 export default async function Footer() {
   return (
-    <footer className="bg-gray-800 text-white">
+    <footer className="bg-gray-800 text-white mt-6">
       <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row md:justify-around items-center gap-6">
         <div className="flex flex-col items-center">
           <p>Jane Doe</p>
