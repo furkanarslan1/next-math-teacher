@@ -1,3 +1,4 @@
+import Footer from "@/components/footer/Footer";
 import Header from "@/components/header/Header";
 import { createServerSupabase } from "@/lib/supabase/server";
 import React from "react";
@@ -15,6 +16,7 @@ export default async function MainLayout({
         <Header user={user} />
       </header>
       <main className="min-h-screen ">{children}</main>
+      <Footer />
     </>
   );
 }
