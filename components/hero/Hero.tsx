@@ -13,7 +13,7 @@ export default function Hero() {
         className="object-cover object-center "
         fill
       />
-      <div className="absolute inset-0 bg-black/50 "></div>
+      <div className="absolute inset-0 bg-black/30 "></div>
       {/* SLOGAN */}
       <div className="absolute h-full w-full flex items-end px-2 pb-4 md:pb-0 lg:items-center    lg:ms-6">
         <div className="flex flex-col gap-2">
