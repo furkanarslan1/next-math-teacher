@@ -70,3 +70,34 @@ export async function updateHomeworkAction(id: string, formData: FormData) {
   revalidatePath("/admin/homeworks");
   return { success: true };
 }
+
+export async function toggleHomeworkStatus(
+  homeworkId: string,
+  isCompleted: boolean
+) {
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("You must log in.");
+
+  if (isCompleted) {
+    // Tamamlandı olarak işaretle (Kayıt ekle)
+    // Mark as completed (Add record)
+    await supabase.from("homework_submissions").insert({
+      homework_id: homeworkId,
+      student_id: user.id,
+    });
+  } else {
+    // İşareti kaldır (Kaydı sil)
+    // Remove the mark (Delete the record)
+    await supabase
+      .from("homework_submissions")
+      .delete()
+      .eq("homework_id", homeworkId)
+      .eq("student_id", user.id);
+  }
+
+  revalidatePath("/homeworks");
+}
