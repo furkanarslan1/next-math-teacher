@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Calendar,
   Edit2,
+  UserCheck,
 } from "lucide-react";
 import Link from "next/link";
 import DeleteHomeworkButton from "./_components/DeleteHomeworkButton";
@@ -102,6 +103,13 @@ export default async function AdminHomeworksPage() {
                 className="p-3 text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"
               >
                 <Edit2 size={20} />
+              </Link>
+              <Link
+                href={`/admin/homeworks/${hw.id}`}
+                className="p-3 text-green-600 bg-green-50 rounded-xl hover:bg-green-100 transition-colors"
+                title="Tamamlayanları Gör"
+              >
+                <UserCheck size={20} />
               </Link>
             </div>
           </div>
