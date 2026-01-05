@@ -50,3 +50,19 @@ export async function addQuestionAction(formData: FormData, testId: string) {
 
   revalidatePath(`/admin/tests/${testId}`);
 }
+
+export async function createTestCategoryAction(formData: FormData) {
+  const supabase = await createServerSupabase();
+
+  const title = formData.get("title") as string;
+  const target_grade = parseInt(formData.get("target_grade") as string);
+  const course_category = formData.get("course_category") as string;
+
+  const { error } = await supabase
+    .from("test_categories")
+    .insert([{ title, target_grade, course_category }]);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/tests");
+}
