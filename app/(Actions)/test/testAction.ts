@@ -2,6 +2,7 @@
 
 import { createServerSupabase } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function addQuestionAction(formData: FormData, testId: string) {
   const supabase = await createServerSupabase();
@@ -28,7 +29,7 @@ export async function addQuestionAction(formData: FormData, testId: string) {
 
     const {
       data: { publicUrl },
-    } = supabase.storage.from("text-questions").getPublicUrl(fileName);
+    } = supabase.storage.from("test-questions").getPublicUrl(fileName);
 
     imageUrl = publicUrl;
   }
@@ -54,16 +55,34 @@ export async function addQuestionAction(formData: FormData, testId: string) {
 export async function createTestCategoryAction(formData: FormData) {
   const supabase = await createServerSupabase();
 
-  const title = formData.get("title") as string;
-  const target_grade = parseInt(formData.get("target_grade") as string);
-  const course_category = formData.get("course_category") as string;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized ");
 
-  const { error } = await supabase
-    .from("test_categories")
-    .insert([{ title, target_grade, course_category }]);
+  const title = formData.get("title") as string;
+
+  // getAll() ile tüm seçili checkbox değerlerini dizi olarak alıyoruz
+  // We get all selected checkbox values ​​as an array using getAll()
+  const target_course_categories = formData.getAll(
+    "target_course_categories"
+  ) as string[];
+  const target_grades_raw = formData.getAll("target_grades") as string[];
+
+  // String dizisini sayı dizisine çeviriyoruz
+  // Converting a string array to a number array
+  const target_grades = target_grades_raw.map((g) => parseInt(g));
+
+  const { error } = await supabase.from("test_categories").insert([
+    {
+      title,
+      target_course_categories, // Örn: ['SBS', 'VIP']
+      target_grades, // Örn: [8, 12]
+      target_student_id: (formData.get("target_student_id") as string) || null,
+    },
+  ]);
 
   if (error) throw new Error(error.message);
-
   revalidatePath("/admin/tests");
 }
 
@@ -109,5 +128,6 @@ export async function submitTestResultsAction(
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/success");
+  revalidatePath("/stats");
+  // redirect("/stats");
 }

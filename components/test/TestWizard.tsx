@@ -36,7 +36,7 @@ export default function TestWizard({
 
     try {
       await submitTestResultsAction(test.id, results);
-      router.push("/user/success"); // Başarılarım sayfasına yönlendir // Redirect to My Achievements page
+      router.push("/stats"); // Başarılarım sayfasına yönlendir // Redirect to My Achievements page
     } catch (err) {
       toast.error("An error occurred.");
     } finally {

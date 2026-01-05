@@ -1,12 +1,14 @@
 "use client";
 import { addQuestionAction } from "@/app/(Actions)/test/testAction";
 import { CheckCircle2, ImagePlus, Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 
 export default function AddQuestionForm({ testId }: { testId: string }) {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -18,19 +20,37 @@ export default function AddQuestionForm({ testId }: { testId: string }) {
     setLoading(true);
     const formData = new FormData(e.currentTarget);
 
+    // try {
+    //   await addQuestionAction(formData, testId);
+    //   e.currentTarget.reset();
+    //   setPreview(null);
+    //   toast.success("Question successfully added.");
+    // } catch (err: any) {
+    //   toast.error(err.message);
+    // } finally {
+    //   setLoading(false);
+    // }
+
     try {
       await addQuestionAction(formData, testId);
-      e.currentTarget.reset();
+
+      // e.currentTarget yerine formRef.current kullanarak null hatasını önlüyoruz
+      // We prevent null error by using formRef.current instead of e.currentTarget
+      if (formRef.current) {
+        formRef.current.reset();
+      }
+
       setPreview(null);
-      toast.success("Question successfully added.");
+      toast.success("Question successfully added / Soru başarıyla eklendi.");
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.message || "Something went wrong / Bir hata oluştu.");
     } finally {
       setLoading(false);
     }
   }
   return (
     <form
+      ref={formRef}
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-3xl border shadow-sm space-y-4"
     >
@@ -77,7 +97,7 @@ export default function AddQuestionForm({ testId }: { testId: string }) {
               name={`option_${option.toLowerCase()}`}
               required
               className="flex-1 p-2 border rounded-lg"
-              placeholder={`Seçenek ${option}`}
+              placeholder={`Option ${option}`}
             />
           </div>
         ))}
