@@ -7,13 +7,17 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { submitTestResultsAction } from "@/app/(Actions)/test/testAction";
 
+interface TestWizardProps {
+  test: any;
+  questions: any[];
+  isFixMode?: boolean;
+}
+
 export default function TestWizard({
   test,
   questions,
-}: {
-  test: any;
-  questions: any[];
-}) {
+  isFixMode = false,
+}: TestWizardProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({}); // { questionId: 'A' }
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +40,12 @@ export default function TestWizard({
 
     try {
       await submitTestResultsAction(test.id, results);
-      router.push("/stats"); // Başarılarım sayfasına yönlendir // Redirect to My Achievements page
+      // router.push("/stats"); // Başarılarım sayfasına yönlendir // Redirect to My Achievements page
+      if (isFixMode) {
+        router.push("/wrong-answers"); // Yanlışları çözüyorsa tekrar yanlışlar listesine dönsün
+      } else {
+        router.push("/stats"); // Normal test ise istatistiklere gitsin
+      }
     } catch (err) {
       toast.error("An error occurred.");
     } finally {
