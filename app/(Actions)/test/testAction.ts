@@ -81,3 +81,33 @@ export async function createSubTestAction(formData: FormData) {
 
   revalidatePath(`/admin/tests/${category_id}`);
 }
+
+export async function submitTestResultsAction(
+  testId: string,
+  results: { questionId: string; selectedAnswer: string; isCorrect: boolean }[]
+) {
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("You must log in.");
+
+  // Sonuçları test_attempts tablosuna ekle (UPSERT kullanıyoruz ki tekrar çözdüğünde güncellensin)
+  // Add the results to the test_attempts table (we use UPSERT so that it is updated when it is solved again)
+  const submissions = results.map((res) => ({
+    student_id: user.id,
+    test_id: testId,
+    question_id: res.questionId,
+    selected_answer: res.selectedAnswer,
+    is_correct: res.isCorrect,
+  }));
+
+  const { error } = await supabase
+    .from("test_attempts")
+    .upsert(submissions, { onConflict: "student_id, question_id" });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/success");
+}
