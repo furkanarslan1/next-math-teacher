@@ -4,7 +4,7 @@ import { CheckCircle2, ImagePlus, Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-export default function addQuestionForm({ testId }: { testId: string }) {
+export default function AddQuestionForm({ testId }: { testId: string }) {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 

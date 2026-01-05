@@ -66,3 +66,18 @@ export async function createTestCategoryAction(formData: FormData) {
 
   revalidatePath("/admin/tests");
 }
+
+export async function createSubTestAction(formData: FormData) {
+  const supabase = await createServerSupabase();
+
+  const title = formData.get("title") as string;
+  const category_id = formData.get("category_id") as string;
+
+  const { error } = await supabase
+    .from("tests")
+    .insert([{ title, category_id }]);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath(`/admin/tests/${category_id}`);
+}
