@@ -1,4 +1,5 @@
 "use client";
+import { createPricePlan } from "@/app/(Actions)/pricePlan/pricePlansAction";
 import {
   PricePlanFormValues,
   pricePlansSchema,
@@ -10,11 +11,13 @@ import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export default function AddPricePlanForm({
-  categories,
-}: {
-  categories: { name: string };
-}) {
+const CATEGORIES = [
+  { id: "single", label: "Individual (1 Person)" },
+  { id: "group_4", label: "Small Group (4 People)" },
+  { id: "group_6", label: "Large Group (6 People)" },
+];
+
+export default function AddPricePlanForm() {
   const router = useRouter();
   const form = useForm<PricePlanFormValues>({
     resolver: zodResolver(pricePlansSchema) as any,
@@ -70,21 +73,18 @@ export default function AddPricePlanForm({
         {/* Category */}
         <div className="flex flex-col gap-2">
           <label className="font-semibold text-slate-700">Class Type</label>
-          <select
-            {...form.register("category")}
-            className="p-3 border rounded-xl outline-none focus:ring-2 ring-blue-500 bg-white"
-          >
-            <option value="single">Individual (1 Person)</option>
-            <option value="group_4">Small Group (4 People)</option>
-            <option value="group_6">Large Group (6 People)</option>
+          <select {...form.register("category")}>
+            {CATEGORIES.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.label}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* Price */}
         <div className="flex flex-col gap-2">
-          <label className="font-semibold text-slate-700">
-            Base Price (TL)
-          </label>
+          <label className="font-semibold text-slate-700">Base Price ($)</label>
           <input
             type="number"
             {...form.register("price")}
