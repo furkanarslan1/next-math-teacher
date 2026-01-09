@@ -9,7 +9,8 @@ import {
 } from "@/schemas/pricePlansSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Save, Trash2 } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
