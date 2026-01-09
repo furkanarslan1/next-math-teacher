@@ -1,5 +1,8 @@
 "use client";
-import { createPricePlan } from "@/app/(Actions)/pricePlan/pricePlansAction";
+import {
+  createPricePlan,
+  updatePricePlan,
+} from "@/app/(Actions)/pricePlan/pricePlansAction";
 import {
   PricePlanFormValues,
   pricePlansSchema,
@@ -17,11 +20,18 @@ const CATEGORIES = [
   { id: "group_6", label: "Large Group (6 People)" },
 ];
 
-export default function AddPricePlanForm() {
+interface AddPricePlanFormProps {
+  initialData?: PricePlanFormValues & { id: string }; // Edit için opsiyonel veri
+}
+
+export default function AddPricePlanForm({
+  initialData,
+}: AddPricePlanFormProps) {
+  const isEditMode = !!initialData; // If initial data exists, we are in editing mode. // initialData varsa edit modundayız
   const router = useRouter();
   const form = useForm<PricePlanFormValues>({
     resolver: zodResolver(pricePlansSchema) as any,
-    defaultValues: {
+    defaultValues: initialData || {
       title: "",
       category: "single",
       price: 0,
@@ -37,16 +47,21 @@ export default function AddPricePlanForm() {
   });
 
   const onSubmit = async (data: PricePlanFormValues) => {
-    try {
-      const result = await createPricePlan(data);
+    if (isEditMode) {
+      await updatePricePlan(initialData.id, data);
+      toast.success("Plan updated!");
+    } else {
+      try {
+        const result = await createPricePlan(data);
 
-      if (result.success) {
-        toast.success("Plan created successfully!");
-        router.push("/admin/pricePlans");
-      } else {
-        toast.error("Something went wrong");
-      }
-    } catch (error) {}
+        if (result.success) {
+          toast.success("Plan created successfully!");
+          router.push("/admin/pricePlans");
+        } else {
+          toast.error("Something went wrong");
+        }
+      } catch (error) {}
+    }
   };
 
   return (
@@ -147,7 +162,7 @@ export default function AddPricePlanForm() {
         type="submit"
         className="w-full bg-slate-900 text-white p-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition"
       >
-        <Save size={20} /> Create Price Plan
+        {isEditMode ? "Update Plan" : "Create Plan"}
       </button>
     </form>
   );
