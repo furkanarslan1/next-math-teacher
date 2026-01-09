@@ -4,7 +4,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default async function DeletePlanButton({ id }: { id: string }) {
+export default function DeletePlanButton({ id }: { id: string }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -30,7 +30,7 @@ export default async function DeletePlanButton({ id }: { id: string }) {
     <button
       onClick={handleDelete}
       disabled={isDeleting}
-      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
+      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition disabled:opacity-50 cursor-pointer"
     >
       <Trash2 size={20} />
     </button>

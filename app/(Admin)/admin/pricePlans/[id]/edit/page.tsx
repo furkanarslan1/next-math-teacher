@@ -1,20 +1,21 @@
 import { supabase } from "@/lib/supabase/client";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { id } from "date-fns/locale";
+
 import React from "react";
 import AddPricePlanForm from "../../create/_components/AddPricePlanForm";
 
 export default async function PricePlanEditPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id: planId } = await params;
   const supabase = await createServerSupabase();
 
   const { data: plan } = await supabase
     .from("price_plans")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", planId)
     .single();
 
   if (!plan) return <div className="max-w-6xl mx-auto">Plan not found</div>;
