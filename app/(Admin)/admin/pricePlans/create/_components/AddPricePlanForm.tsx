@@ -51,6 +51,7 @@ export default function AddPricePlanForm({
     if (isEditMode) {
       await updatePricePlan(initialData.id, data);
       toast.success("Plan updated!");
+      router.push("/admin/pricePlans");
     } else {
       try {
         const result = await createPricePlan(data);
