@@ -103,7 +103,7 @@ export async function createSubTestAction(formData: FormData) {
 
 export async function submitTestResultsAction(
   testId: string,
-  results: { questionId: string; selectedAnswer: string; isCorrect: boolean }[]
+  userAnswers: { questionId: string; selectedAnswer: string }[]
 ) {
   const supabase = await createServerSupabase();
   const {
@@ -114,19 +114,34 @@ export async function submitTestResultsAction(
 
   // Sonuçları test_attempts tablosuna ekle (UPSERT kullanıyoruz ki tekrar çözdüğünde güncellensin)
   // Add the results to the test_attempts table (we use UPSERT so that it is updated when it is solved again)
-  const submissions = results.map((res) => ({
-    student_id: user.id,
-    test_id: testId,
-    question_id: res.questionId,
-    selected_answer: res.selectedAnswer,
-    is_correct: res.isCorrect,
-  }));
 
-  const { error } = await supabase
+  const questionIds = userAnswers.map((ua) => ua.questionId);
+  const { data: correctAnswers, error: fetchError } = await supabase
+    .from("questions")
+    .select("id,correct_answer")
+    .in("id", questionIds);
+
+  if (fetchError || !correctAnswers)
+    throw new Error("Answer key could not be obtained.");
+  const submissions = userAnswers.map((ua) => {
+    const dbQuestion = correctAnswers.find((q) => q.id === ua.questionId);
+
+    return {
+      student_id: user.id,
+      test_id: testId,
+      question_id: ua.questionId,
+      selected_answer: ua.selectedAnswer,
+      is_correct: dbQuestion
+        ? dbQuestion.correct_answer === ua.selectedAnswer
+        : false,
+    };
+  });
+
+  const { error: upsertError } = await supabase
     .from("test_attempts")
     .upsert(submissions, { onConflict: "student_id, question_id" });
 
-  if (error) throw new Error(error.message);
+  if (upsertError) throw new Error(upsertError.message);
 
   revalidatePath("/stats");
   // redirect("/stats");

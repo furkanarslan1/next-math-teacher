@@ -35,7 +35,6 @@ export default function TestWizard({
     const results = questions.map((q) => ({
       questionId: q.id,
       selectedAnswer: answers[q.id],
-      isCorrect: answers[q.id] === q.correct_answer,
     }));
 
     try {
