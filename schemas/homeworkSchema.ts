@@ -9,8 +9,14 @@ export const HomeworkSchema = z.object({
     .url("Please enter a invalid URL")
     .or(z.literal("")),
   target_type: z.enum(["all", "grade", "student"]),
-  target_grade: z.coerce.number().min(1).max(12).nullable().optional(),
-  target_student_id: z.string().uuid().nullable().optional(),
+  target_grade: z.preprocess(
+    (val) => (val === "" ? null : val),
+    z.coerce.number().nullable().optional()
+  ),
+  target_student_id: z.preprocess(
+    (val) => (val === "" ? null : val),
+    z.string().nullable().optional()
+  ),
 });
 
 export type HomeworkFormValues = z.infer<typeof HomeworkSchema>;

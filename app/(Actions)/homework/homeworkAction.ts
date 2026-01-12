@@ -109,17 +109,19 @@ import { revalidatePath } from "next/cache";
 import { HomeworkSchema } from "@/schemas/homeworkSchema";
 import { validateAdmin, validateUser } from "@/lib/auth-utils";
 
-export async function createHomeworkAction(rawData: any) {
-  //  Yetki ve Supabase bağlantısı
-  //  Authorization and Subbase Connection
+export async function createHomeworkAction(formData: FormData) {
   const { supabase, user } = await validateAdmin();
 
-  //  Zod ile doğrulama ve temizleme
-  // Verification and clearing with Zod
+  // FormData'yı düz bir objeye çeviriyoruz
+  // We convert FormData to a plain object
+  const rawData = Object.fromEntries(formData.entries());
+
+  // Zod doğrulaması (Hata varsa burada fırlatır)
+  // Zod verification (It throws an error here if there is one)
   const validatedData = HomeworkSchema.parse(rawData);
 
-  //  Veri Temizliği (Logic)
-  // Data Cleaning (Logic)
+  // Veri Temizliği: Seçili olmayan alanları null yap
+  // Data Cleaning: Set unselected fields to null
   if (validatedData.target_type !== "student")
     validatedData.target_student_id = null;
   if (validatedData.target_type !== "grade") validatedData.target_grade = null;
@@ -136,17 +138,19 @@ export async function createHomeworkAction(rawData: any) {
   return { success: true };
 }
 
-export async function updateHomeworkAction(id: string, rawData: any) {
-  // Yetki Kontrolü
-  // Authorization Control
+export async function updateHomeworkAction(id: string, formData: FormData) {
   const { supabase } = await validateAdmin();
 
-  //  Zod Doğrulama
-  //  Zod Verification
+  // FormData'yı objeye çeviriyoruz
+  // Converting FormData to an object
+  const rawData = Object.fromEntries(formData.entries());
+
+  // Zod ile doğrula
+  // Verify with Zod
   const validatedData = HomeworkSchema.parse(rawData);
 
-  // 3. Veri Temizliği (Önceki değerlerin kalmaması için)
-  // 3. Data Cleaning (To ensure no previous values ​​remain)
+  // Temizlik mantığı
+  //The logic of cleanliness
   const cleanData = {
     ...validatedData,
     target_grade:
