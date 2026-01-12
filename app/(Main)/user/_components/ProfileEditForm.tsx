@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import {
   Camera,
@@ -14,6 +13,7 @@ import {
   Home,
 } from "lucide-react";
 import Image from "next/image";
+import { updateProfileAction } from "@/app/(Actions)/profile/profileAction";
 
 export default function ProfileEditForm({ profile, user }: any) {
   const router = useRouter();
@@ -38,48 +38,31 @@ export default function ProfileEditForm({ profile, user }: any) {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
+    // FormData oluştururken e.currentTarget kullanıyoruz
+    // e.currentTarget options when creating FormData
+    const formData = new FormData(e.currentTarget);
+
+    // Dosya state'te olduğu için onu manuel ekliyoruz
+    // We are also sending the URL of the old image for deletion purposes.
+    if (file) {
+      formData.append("avatar", file);
+    }
+    // Eski resmin URL'ini de silme işlemi için gönderiyoruz
+    // We are also sending the URL of the old image for deletion purposes.
+    formData.append("old_avatar_url", profile?.avatar_url || "");
+
     try {
-      let avatarUrl = profile?.avatar_url;
-
-      if (file) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${user.id}/${Math.random()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage
-          .from("avatars")
-          .upload(fileName, file, { upsert: true });
-
-        if (uploadError) throw uploadError;
-
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("avatars").getPublicUrl(fileName);
-        avatarUrl = publicUrl;
+      const result = await updateProfileAction(formData);
+      if (result.success) {
+        router.push("/user");
+        router.refresh();
       }
-
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({
-          full_name: fullName,
-          phone,
-          city,
-          district,
-          school,
-          grade: grade ? parseInt(grade.toString()) : null, // Sayı formatına çevir
-          address,
-          avatar_url: avatarUrl,
-        })
-        .eq("id", user.id);
-
-      if (updateError) throw updateError;
-
-      router.refresh();
-      router.push("/user");
     } catch (error: any) {
-      alert("ERROR: " + error.message);
+      alert("Hata: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -87,14 +70,14 @@ export default function ProfileEditForm({ profile, user }: any) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* IMAGE */}
+      {/* PROFİLE IMAGE */}
       <div className="flex flex-col items-center gap-4 py-4">
         <div className="relative w-24 h-24 group">
           <div className="w-full h-full rounded-full overflow-hidden border-2 border-blue-100 bg-gray-50">
             {previewUrl ? (
               <Image
                 src={previewUrl}
-                alt="Profil"
+                alt="Profile"
                 fill
                 className="object-cover"
               />
@@ -115,12 +98,13 @@ export default function ProfileEditForm({ profile, user }: any) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* NAME */}
+        {/* NAME SURNAME */}
         <div className="space-y-1">
           <label className="text-xs font-bold text-gray-500 flex items-center gap-1">
             <User size={14} /> NAME SURNAME
           </label>
           <input
+            name="full_name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             className="w-full p-2 border rounded-md"
@@ -133,6 +117,7 @@ export default function ProfileEditForm({ profile, user }: any) {
             <Phone size={14} /> PHONE
           </label>
           <input
+            name="phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full p-2 border rounded-md"
@@ -145,18 +130,20 @@ export default function ProfileEditForm({ profile, user }: any) {
             <MapPin size={14} /> CITY
           </label>
           <input
+            name="city"
             value={city}
             onChange={(e) => setCity(e.target.value)}
             className="w-full p-2 border rounded-md"
           />
         </div>
 
-        {/* İlçe */}
+        {/* DISCRICT */}
         <div className="space-y-1">
           <label className="text-xs font-bold text-gray-500 flex items-center gap-1">
-            <MapPin size={14} /> TOWN
+            <MapPin size={14} /> DISCRICT
           </label>
           <input
+            name="district"
             value={district}
             onChange={(e) => setDistrict(e.target.value)}
             className="w-full p-2 border rounded-md"
@@ -169,26 +156,28 @@ export default function ProfileEditForm({ profile, user }: any) {
             <School size={14} /> SCHOOL
           </label>
           <input
+            name="school"
             value={school}
             onChange={(e) => setSchool(e.target.value)}
             className="w-full p-2 border rounded-md"
           />
         </div>
 
-        {/* CLASS */}
+        {/* GRADE */}
         <div className="space-y-1">
           <label className="text-xs font-bold text-gray-500 flex items-center gap-1">
-            <GraduationCap size={14} /> CLASS
+            <GraduationCap size={14} /> GRADE
           </label>
           <select
+            name="grade"
             value={grade}
             onChange={(e) => setGrade(e.target.value)}
             className="w-full p-2 border rounded-md"
           >
-            <option value="">Seçiniz</option>
+            <option value="">Selecet</option>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((g) => (
               <option key={g} value={g}>
-                {g}. Class
+                {g}. Grade
               </option>
             ))}
             <option value="0">Graduated</option>
@@ -196,12 +185,13 @@ export default function ProfileEditForm({ profile, user }: any) {
         </div>
       </div>
 
-      {/* ADRESS */}
+      {/* ADDRESS */}
       <div className="space-y-1">
         <label className="text-xs font-bold text-gray-500 flex items-center gap-1">
-          <Home size={14} /> ADRESS
+          <Home size={14} /> ADDRESS
         </label>
         <textarea
+          name="address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           className="w-full p-2 border rounded-md h-20"
@@ -211,7 +201,7 @@ export default function ProfileEditForm({ profile, user }: any) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-slate-900 text-white p-3  cursor-pointer rounded-md font-bold flex justify-center items-center gap-2"
+        className="w-full bg-slate-900 text-white p-3 cursor-pointer rounded-md font-bold flex justify-center items-center gap-2 disabled:opacity-50"
       >
         {loading ? <Loader2 className="animate-spin" /> : "Update"}
       </button>
